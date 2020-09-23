@@ -8,6 +8,7 @@ import { AlertifyService } from 'src/app/_services/alertify.service';
 
 
 
+
 @Component({
   selector: 'app-photo-editor',
   templateUrl: './photo-editor.component.html',
@@ -71,4 +72,14 @@ export class PhotoEditorComponent implements OnInit {
     });
   }
 
+  deletePhoto(id: number) {
+    this.alertifyService.confirm('Are you sure you want to delete this photo?', () => {
+      this.userService.deletePhoto(this.authService.decodedToken.nameid, id).subscribe(() => {
+        this.photos.splice(this.photos.findIndex(p => p.id === id), 1);
+        this.alertifyService.success('Photo has been deleted');
+      }, error => {
+        this.alertifyService.error('Failed to delete the photo');
+      });
+    });
+  }
 }
